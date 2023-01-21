@@ -1,3 +1,6 @@
+import dayjs from "dayjs"
+import { useEffect, useState } from "react"
+import { api } from "../lib/axios"
 import { generateDatesFromYearBegining } from "../utils/generate-dates-from-year-begining"
 import { HabitDay } from "./HabitDay"
 
@@ -16,7 +19,26 @@ const summaryDates = generateDatesFromYearBegining()
 const minimumSummaryDates = 18 * 7      // 18 semanas
 const amountOfDaysToFill = minimumSummaryDates - summaryDates.length
 
+// Informar que summary é um objeto
+type Summary = {
+    id: string;
+    date: string;
+    amount: number;
+    completed: number;
+}[]
+
+// A chamada HTTP deve ser feita dentro do componente
+
 export function SummaryTable() {
+    // Fazer a chamada da API apenas uma vez usando useEffect deixando um array vazio após sua chamada
+    const [summary, setSummary] = useState<Summary>([])
+
+    useEffect(() => {
+        api.get('summary').then(response => {
+            setSummary(response.data)
+        })
+    }, [])
+
     return (
         <div className='w-full flex'>
             <div className='grid grid-rows-7 grid-flow-row gap-3'>
@@ -31,11 +53,17 @@ export function SummaryTable() {
 
             <div className='grid grid-rows-7 grid-flow-col gap-3'>
                 {summaryDates.map(date => {
+                    // Verificando se o dia está sendo retornado do backend
+                    const dayInSummary = summary.find(day => {
+                        return dayjs(date).isSame(day.date, 'day')
+                    })
+
                     return (
                         <HabitDay 
-                            key={date.toString()} 
-                            amount={5}
-                            completed={Math.round(Math.random() * 5)}
+                            key={date.toString()}
+                            date={date}
+                            amount={dayInSummary?.amount}
+                            completed={dayInSummary?.completed}
                         />
                     )
                 })}
