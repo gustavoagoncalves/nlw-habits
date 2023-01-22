@@ -21,3 +21,9 @@ export function App() {
 
 // Componente: tudo aquilo que queremos REAPROVEITAR / ISOLAR
 // Propriedade (props): uma informação enviada pra modificar um componente visual ou comportamental
+
+/* 
+Melhoras para a aplicação: autenticação de usuário (Firebase ou Auth0)
+Notificações Push (Mobile) / Service Workes (Web)
+Depois de adicionar autenticação, ter um perfil público do usuário
+*/
